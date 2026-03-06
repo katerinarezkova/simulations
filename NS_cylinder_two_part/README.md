@@ -36,16 +36,12 @@ $$\nabla \cdot \mathbf{u} = 0$$
 ### Running the Simulation
 It is recommended to run the simulation in parallel to speed up the LU factorization. 
 
-On a local machine:
-`mpiexec -n 4 python simulation.py`
-
-On a cluster using Slurm:
-`srun -p express3 -n 4 -u python simulation.py`
+`srun -p express3 -n 4 -u python ns_cylinder_fire.py`
 
 ### Generating Plots
 Once the simulation is complete and the `force_data.txt` file has been generated, run the plotting script to create the PDF visualizations:
 
-`python plot_results.py`
+`srun -p express3 -n 4 -u python plot_results.py`
 
 ## 5. Outputs and Validation
 
@@ -58,4 +54,4 @@ For $Re=100$, the flow exhibits periodic vortex shedding:
 * **Expected $C_L$:** Should oscillate symmetrically between approximately **[-1.0, 1.0]**.
 
 ---
-*This project is part of a Master's Thesis focused on Numerical Methods for Fluid Dynamics.*
+*Benchmark in Firedrake.*

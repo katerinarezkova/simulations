@@ -47,3 +47,4 @@ For $Re=100$, the flow exhibits periodic vortex shedding:
 * **Expected $C_L$:** Should oscillate symmetrically between approximately **[-1.0, 1.0]**.
 
 ---
+*Benchmark in Firedrake.*
