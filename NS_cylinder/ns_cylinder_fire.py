@@ -7,7 +7,7 @@ import numpy as np
 # ale Firedrake preferuje Mesh() objekt.
 try:
     # Pokud máte mesh v souboru (např. z Gmsh)
-    mesh = Mesh("mesh_cylinder_cor.msh")
+    mesh = Mesh("mesh_cylinder.msh")
 except:
     # Náhradní řešení pro demonstraci
     mesh = UnitSquareMesh(32, 32) 
