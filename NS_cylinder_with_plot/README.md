@@ -2,6 +2,8 @@
 
 This project implements a numerical simulation of the non-stationary incompressible Navier-Stokes equations using the **Firedrake** finite element library. The setup follows the well-known **DFG 2D-2 (Re=100)** benchmark, which characterizes the periodic vortex shedding behind a circular cylinder (Von Kármán vortex street).
 
+For more details, see the [DFG Benchmark official page](https://wwwold.mathematik.tu-dortmund.de/~featflow/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark2_re100.html).
+
 ## 1. Physical and Mathematical Model
 
 The fluid flow is governed by the conservation of momentum and mass (continuity equation) for a velocity field $\mathbf{u}$ and pressure $p$:
@@ -10,7 +12,7 @@ $$\frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u} \cdot \nabla) \mathbf{u} 
 $$\nabla \cdot \mathbf{u} = 0$$
 
 ### Benchmark Parameters:
-* **Kinematic Viscosity:** $\nu = 0.001$
+* **Kinematic Viscosity:** $\nu = 0.001$ ($\rho$ =  1 omitted density in the equation above)
 * **Reynolds Number:** $Re = 100$ (based on $U_{mean} = 1.0$ and cylinder diameter $L = 0.1$)
 * **Inflow Profile:** Parabolic with a maximum velocity $U_{max} = 1.5$
 * **Geometry:** A rectangular channel $[0, 2.2] \times [0, 0.41]$ with a circular obstacle centered at $(0.2, 0.2)$.
@@ -26,7 +28,7 @@ $$\nabla \cdot \mathbf{u} = 0$$
 
 | File | Purpose |
 | :--- | :--- |
-| `ns_cylinder_fire.py` | Main Firedrake script. Runs the solver, exports numerical data and generates PDF plots. |
+| `ns_cylinder_fire_plot.py` | Main Firedrake script. Runs the solver, exports numerical data and generates PDF plots. |
 | `results/` | Directory containing `.pvd` files for visualization in **ParaView**. |
 
 ## 4. Instructions for Use
@@ -34,7 +36,7 @@ $$\nabla \cdot \mathbf{u} = 0$$
 ### Running the Simulation
 It is recommended to run the simulation in parallel to speed up the LU factorization. 
 
-`srun -p express3 -n 4 -u python simulation.py`
+`srun -p express3 -n 4 -u python ns_cylinder_fire_plot.py`
 
 ## 5. Outputs and Validation
 
