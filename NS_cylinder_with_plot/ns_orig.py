@@ -2,6 +2,13 @@ from firedrake import *
 from firedrake.output import VTKFile
 import numpy as np
 
+# --------------------------------------------------------
+# D(u) + DDN
+# change nu
+# --------------------------------------------------------
+
+
+
 # ------------------------------------------------------------------------------------------------------------------
 # TASK
 # ------------------------------------------------------------------------------------------------------------------
@@ -38,9 +45,9 @@ W = V * P                                           # mixed space for (u,p)
 U = 1.5                                             # maximal velocity at inflow
 Y = 0.41                                            # height of the tunnel for inflow velocity - check from .msh
 r = 0.05                                            # diameter of the object perpendicular to the flow (cylinder) - check from .msh
-nu = Constant(0.001)                                # viscosity
+nu = 0.0001                                          # viscosity
 dt = 0.1                                            # time step
-t_end = 5                                           # maximal time
+t_end = 15                                           # maximal time
 theta = Constant(0.5)                               # for time-schemes (Crank-Nicolson)
 
 # boundary conditions
@@ -101,6 +108,7 @@ F = (1.0/dt) * Ft + theta * F1 + (1.0 - theta) * F0  # theta = 0.5 --> Crank_Nic
 prob = NonlinearVariationalProblem(F, w, bcs=bcs)                # (weak formulation, weak solution, boundary conditions)
 solver = NonlinearVariationalSolver(prob, solver_parameters={
     'snes_type': 'newtonls',                                     # Newton's method F(w)=0
+    'snes_linesearch_type': 'bt',                                # add line-search
     'snes_atol': 1e-12,                                          # error tolerance
     'snes_rtol': 1e-12,                                          # residuum tolerance
     'snes_max_it': 20,                                           # max. iterations for one time step
@@ -110,8 +118,8 @@ solver = NonlinearVariationalSolver(prob, solver_parameters={
 })
 
 # output files
-out_v = VTKFile("results/velocity.pvd")              # result of velocity
-out_p = VTKFile("results/pressure.pvd")              # result of pressure
+out_v = VTKFile(f"results/velocity_{Re}_orig.pvd")              # result of velocity
+out_p = VTKFile(f"results/pressure_{Re}_orig.pvd")              # result of pressure
 
 # set initial values
 t = 0.0                                              # initial time
@@ -142,8 +150,11 @@ while t < t_end:
     
     out_v.write(_v, time=t)                          # update velocity
     out_p.write(_p, time=t)                          # update pressure
-    
-print("Finished computations")
+
+if COMM_WORLD.rank == 0:                         # for the main process (for MPI):      
+    print(f"Finished computations for Re = {Re} with D(u).") 
+    print(f"- saved to results/velocity_{Re}_orig.pvd")
+    print(f"- saved to results/pressure_{Re}_orig.pvd.")
 
 # plot drag and lift coefficients
 if COMM_WORLD.rank == 0:
@@ -157,12 +168,13 @@ if COMM_WORLD.rank == 0:
     plt.plot(drag_array[:, 0], drag_array[:, 1], 'b-', label='Drag coefficient $C_D$')
     plt.plot(lift_array[:, 0], lift_array[:, 1], 'r-', label='Lift coefficient $C_L$')
     
-    plt.title('Flow around cylinder ($Re={Re}$)')
+    plt.title(f'Flow around cylinder ($Re = {Re}$) with D(u)')
     plt.xlabel('Time [s]')
     plt.ylabel('Coefficients lift/drag')
     plt.grid(True, linestyle='--', alpha=0.7)
     plt.legend(loc='upper right')
     
     # save plt
-    plt.savefig('graph_lift_drag.pdf', bbox_inches='tight')
-    print("Finished plotting")
+    plt.savefig(f'graph_lift_drag_{Re}_orig.pdf', bbox_inches='tight')
+    print(f"Finished plotting for Re = {Re}_orig.")
+    print(f"- saved to graph_lift_drag_{Re}_orig.pdf")
