@@ -14,7 +14,7 @@ try:
     plt.plot(time, drag, 'b-', label=f'Drag coefficient $C_D$')
     plt.plot(time, lift, 'r-', label=f'Lift coefficient $C_L$')
     
-    plt.title(f'Flow around cylinder ($Re={Re}$)')
+    plt.title(f'Flow around cylinder ($Re={Re}$) with D(u)')
     plt.xlabel('Time [s]')
     plt.ylabel('Coefficients lift/drag')
     plt.grid(True, linestyle='--', alpha=0.7)
