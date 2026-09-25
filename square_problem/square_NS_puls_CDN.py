@@ -10,8 +10,10 @@ import numpy as np
 # time-periodic problem: v(0,.) = v(T,.), T = 1
 # --------------------------------------
 
-# mesh
-mesh = Mesh("square.msh")                    # .msh created using Gmsh
+# mesh -- built-in unit square, no external mesh file / Gmsh needed.
+# Firedrake auto-tags the four sides: 1 = x=0, 2 = x=1, 3 = y=0, 4 = y=1
+nx, ny = 20, 20                              # cells per side; increase for finer resolution
+mesh = UnitSquareMesh(nx, ny)
 
 # finite element space (Taylor-Hood: P2 + P1)
 V = VectorFunctionSpace(mesh, "CG", 2)
@@ -37,14 +39,13 @@ k = 3                                       # 1, 2, 3, 4 -> controls nu, as befo
 nu = Constant(5 * 10**(-k))
 
 # --------------------------------------------------------------------------
-# BOUNDARY MARKERS -- *** CHECK THESE AGAINST YOUR .geo/.msh FILE ***
-# ΓD = boundary \ {x=0} (right, top, bottom): Dirichlet v=0
-# ΓN = {0} x (0,1) (left edge, x=0): do-nothing -> NO bc is imposed there at all
-# In your steady script a single marker "5" covered the *whole* boundary
-# (i.e. no ΓN was present) -- for this problem you need the markers split up.
-# Replace GAMMA_D_MARKERS below with the actual tag(s) for the 3 Dirichlet sides.
+# BOUNDARY MARKERS -- Firedrake's built-in UnitSquareMesh convention:
+#   1 = x=0 (left)   -> Gamma_N (do-nothing, NO bc applied -- left out on purpose)
+#   2 = x=1 (right)  -> Gamma_D
+#   3 = y=0 (bottom) -> Gamma_D
+#   4 = y=1 (top)    -> Gamma_D
 # --------------------------------------------------------------------------
-GAMMA_D_MARKERS = (5,)   # <-- placeholder, fix based on your .geo file!
+GAMMA_D_MARKERS = (2, 3, 4)
 
 bc_walls = DirichletBC(W.sub(0), g, GAMMA_D_MARKERS)
 bcs = [bc_walls]
