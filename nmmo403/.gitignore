@@ -1,0 +1,13 @@
+# Firedrake and Visualization outputs
+*.vtu
+*.pvtu
+*.h5
+*.msh
+*.pvd
+
+# Python cache (makes the folder messy)
+__pycache__/
+*.pyc
+
+# PETSc log files
+*.log
